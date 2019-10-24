@@ -15,7 +15,7 @@ class User {
   }
 
   static getUserbyID(id, callback) {
-    db.query("SELECT * FROM Usuarios where id = ? limit 1", [id], (err, res) => callback(err, res))
+    db.query("SELECT * FROM Usuarios WHERE id = ? limit 1", [id], (err, res) => callback(err, res))
   }
 
   static findUserByEmail(email, callback) {

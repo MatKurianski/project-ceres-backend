@@ -2,7 +2,7 @@ const User = require('./../models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const { secretKey } = require('./../config')
+const { saltRounds, secretKey } = require('./../config')
 
 async function login(req, res) {
   const { email, senha: senhaRecebida } = req.body
@@ -30,6 +30,20 @@ async function login(req, res) {
   })
 }
 
+async function registerUser(req, res) {
+  const {nome, email, senha} = req.body
+  const error = {status: 'error'}
+  if (!nome || !email || !senha) {
+    res.send(error)
+    return;
+  }
+  const senhaCriptografada = bcrypt.hashSync(senha, saltRounds)
+  User.addUser({nome, email, senhaCriptografada}, (err, results) => {
+    if(err) res.send(error)
+    else res.send({status: "sucesso"})
+  })
+}
+
 function protectRoute(req, res, next) {
   const token = req.headers['token']
   if(!token) {
@@ -38,25 +52,26 @@ function protectRoute(req, res, next) {
   }
 
   jwt.verify(token, secretKey, (err, decodedToken) => {
-    userId = decodedToken.id
     if(err) {
       res.status(404).send('Invalid token')
     } else {
+      userId = decodedToken.id
       User.getUserbyID(userId, (err, results) => {
-        if(err) {
+        if(err || results.length == 0) {
           res.status(404).send('Invalid user')
         } else {
-          const { id, email } = results
-          req.id = id
-          req.email = email
+          const { id, email } = results[0]
+          res.locals.id = id
+          res.locals.email = email
+          next()
         }
       })
-      next()
     }
   })
 }
 
 module.exports = {
   login,
+  registerUser,
   protectRoute
 }

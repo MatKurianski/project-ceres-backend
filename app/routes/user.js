@@ -4,5 +4,6 @@ const auth = require('./../controllers/auth')
 module.exports = function(app) {
   app.route('/users')
     .get(auth.protectRoute, User.getAllUsers)
-    .post(User.addUser)
+  app.route('/users/me')
+    .get(auth.protectRoute, User.me)
 }
