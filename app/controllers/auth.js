@@ -13,12 +13,14 @@ async function login(req, res) {
       return;
     }
     const user = results[0]
-    const {id, senha: _SenhaArmazenadaCriptografada} = user
+    const {id, nome, email, senha: _SenhaArmazenadaCriptografada} = user
     const SenhaArmazenadaCriptografada =  _SenhaArmazenadaCriptografada.toString()
     if(bcrypt.compareSync(senhaRecebida, SenhaArmazenadaCriptografada)) {
       const token = User.genUserAuthToken(id)
       res.status(200).send({
         status: "sucesso",
+        nome,
+        email,
         token
       })
     } else {
