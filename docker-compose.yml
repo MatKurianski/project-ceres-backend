@@ -21,7 +21,7 @@ services:
       - db
     working_dir: /usr/app
     ports:
-      - 8080:8080
+            - 3000:3000
     command: npm run dev
 volumes:
   datavolume:
