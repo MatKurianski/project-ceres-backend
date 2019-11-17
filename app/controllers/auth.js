@@ -8,7 +8,10 @@ async function login(req, res) {
   const { email, senha: senhaRecebida } = req.body
   User.findUserByEmail(email, (err, results) => {
     if(err || results.length === 0 || !senhaRecebida) {
-      res.status(400).send({status: 'error'})
+      res.send({
+        status: 'error',
+        mensagem: "Usuário não existe"
+      })
       console.log(err)
       return;
     }
@@ -24,9 +27,9 @@ async function login(req, res) {
         token
       })
     } else {
-      res.status(404).send({
+      res.send({
         status: "erro",
-        mensagem: "Senhas não coincidem"
+        mensagem: "Senha incorreta"
       })
     }
   })
