@@ -7,3 +7,8 @@ module.exports = function(app) {
   app.route('/users/me')
     .get(auth.protectRoute, User.me)
 }
+
+// get - pega - pegar produtos
+// post - envia dados - login, registrar
+// put - atualiza - modificar algum produto
+// delete - remove - deletar
