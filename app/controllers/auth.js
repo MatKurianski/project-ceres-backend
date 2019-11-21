@@ -22,6 +22,7 @@ async function login(req, res) {
       const token = User.genUserAuthToken(id)
       res.status(200).send({
         status: "sucesso",
+        id,
         nome,
         email,
         token
@@ -52,18 +53,18 @@ async function registerUser(req, res) {
 function protectRoute(req, res, next) {
   const token = req.headers['token']
   if(!token) {
-    res.status(404).send('Not logged')
+    res.send('Not logged')
     return;
   }
 
   jwt.verify(token, secretKey, (err, decodedToken) => {
     if(err) {
-      res.status(404).send('Invalid token')
+      res.send('Invalid token')
     } else {
       userId = decodedToken.id
       User.getUserbyID(userId, (err, results) => {
         if(err || results.length == 0) {
-          res.status(404).send('Invalid user')
+          res.send('Invalid user')
         } else {
           const { id, email } = results[0]
           res.locals.id = id
