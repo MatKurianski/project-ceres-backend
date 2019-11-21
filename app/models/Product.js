@@ -32,6 +32,10 @@ class Product {
             " WHERE CatProd.fk_idCategoria = ?", [category], (err, res) => callback(err, res))
   }
 
+  static getAllCategories(callback){
+    db.query("SELECT * FROM Categoria", (err, res) => callback(err, res))
+  }
+
   static genUserAuthToken(id) {
     return jwt.sign({id}, secretKey)
   }

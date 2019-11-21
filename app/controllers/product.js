@@ -28,10 +28,17 @@ async function findProductByCategory(req, res, category) {
   })
 }
 
+async function getAllCategories(req, res) {
+  Product.getAllCategories((err, results) => {
+    if(err) res.send({status: 'error'})
+    else res.send(results)
+  })
+}
 
 module.exports = {
   getAllProducts,
   getProductbyID,
   findProductByCategory,
+  getAllCategories,
   addProduct
 }
