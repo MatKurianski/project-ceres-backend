@@ -20,7 +20,7 @@ class User {
   }
 
   static findUserByEmail(email, callback) {
-    db.query("SELECT * FROM Usuarios where email = ?", [email], (err, res) => callback(err, res))
+    db.query("SELECT * FROM Usuarios WHERE email = ?", [email], (err, res) => callback(err, res))
   }
 
   static genUserAuthToken(id) {
