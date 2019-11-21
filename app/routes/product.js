@@ -11,8 +11,8 @@ module.exports = function(app) {
     .get(Product.getProductbyID)
 
   app.route('/new_product')
-    .get(auth.protectRoute, Product.addProduct)
+    .post(auth.protectRoute, Product.addProduct)
 
-  app.rout('/categories')
+  app.route('/categories')
     .get(Product.getAllCategories)
 }

@@ -4,16 +4,19 @@ const { secretKey } = require('./../config')
 
 class Product {
   static addProduct(product, callback) {
-    const {categorias, usuario, nome, preco, descricao,} = product
-    
+    const {categorias, usuario, nome, preco, descricao} = product
     db.query("INSERT INTO Produto (fk_idUsuario, nome, preco, descricao) values(?, ?, ?, ?)", 
 	    [usuario, nome, preco, descricao], 
 	
 	    (err, results) => {
-	    	categorias.forEach(categoria => {
-		    	db.query("INSERT INTO CatProd (fk_idProduto, fk_idCategoria) VALUES (?,?)", [results.insertId, categoria])
-	    	}, (err, results) => callback(err, results))
-
+        console.log(err)
+        if(Array.isArray(categorias)) {
+          categorias.forEach(categoria => {
+            db.query("INSERT INTO CatProd (fk_idProduto, fk_idCategoria) VALUES (?,?)", [results.insertId, categoria], (err, res) => {
+              if(err) console.log(err)
+            })
+          }, (err, results) => callback(err, results))
+        }
 		    callback(err, results)
 	    }
     )
