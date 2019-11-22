@@ -1,7 +1,17 @@
 const Product = require('./../controllers/product')
 const auth = require('./../controllers/auth')
 const multer = require('multer')
-const upload = multer({dest: 'uploads/produtos'})
+
+var storage = multer.diskStorage(
+  {
+      destination: 'uploads/produtos',
+      filename: function ( req, file, cb ) {
+          cb( null, Date.now()+'.jpg');
+      }
+  }
+)
+
+const upload = multer({storage})
 
 module.exports = function(app) {
   app.route('/products')
