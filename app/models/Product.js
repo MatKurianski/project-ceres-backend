@@ -4,9 +4,9 @@ const { secretKey } = require('./../config')
 
 class Product {
   static addProduct(product, callback) {
-    const {categorias, usuario, nome, preco, descricao} = product
-    db.query("INSERT INTO Produto (fk_idUsuario, nome, preco, descricao) values(?, ?, ?, ?)", 
-	    [usuario, nome, preco, descricao], 
+    const {categorias, usuario, nome, imagem, preco, descricao} = product
+    db.query("INSERT INTO Produto (fk_idUsuario, nome, preco, imagem, descricao) values(?, ?, ?, ?, ?)", 
+	    [usuario, nome, preco, imagem, descricao], 
 	
 	    (err, results) => {
         console.log(err)

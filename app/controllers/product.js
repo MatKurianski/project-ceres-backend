@@ -1,13 +1,18 @@
 const Product = require('./../models/Product')
 
 async function addProduct(req, res) {
-  const {categorias, usuario, nome, preco, descricao} = req.body
-  if(!(usuario && nome && preco && descricao)) {
+  const {categorias: _categorias, usuario: _usuario, nome, preco: _preco, descricao} = req.body
+  const usuario = parseInt(_usuario)
+  const imagem = req.file.filename
+  const categorias = JSON.parse(_categorias)
+  const preco = parseInt(_preco)
+  
+  if(!(usuario && nome && preco && descricao && imagem)) {
     res.send({status: 'faltando informações'})
   } else if(res.locals.id !== usuario) {
-    req.send({status: 'usuario invalido'})
+    res.send({status: 'usuario invalido'})
   } else {
-    const produto = {nome, preco, descricao, usuario, categorias}
+    const produto = {nome, preco, descricao, usuario, categorias, imagem}
     Product.addProduct(produto, (err, results) => {
       if(err) res.send({status: 'error'})
       else res.send({status: 'sucesso'})
