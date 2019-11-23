@@ -16,7 +16,7 @@ async function login(req, res) {
       return;
     }
     const user = results[0]
-    const {id, nome, email, senha: _SenhaArmazenadaCriptografada} = user
+    const {id, nome, email, foto, senha: _SenhaArmazenadaCriptografada} = user
     const SenhaArmazenadaCriptografada =  _SenhaArmazenadaCriptografada.toString()
     if(bcrypt.compareSync(senhaRecebida, SenhaArmazenadaCriptografada)) {
       const token = User.genUserAuthToken(id)
@@ -25,7 +25,8 @@ async function login(req, res) {
         id,
         nome,
         email,
-        token
+        foto,
+        token,
       })
     } else {
       res.send({
@@ -38,13 +39,15 @@ async function login(req, res) {
 
 async function registerUser(req, res) {
   const {nome, email, senha} = req.body
+  const foto = req.file.filename
+
   const error = {status: 'error'}
-  if (!nome || !email || !senha) {
+  if (!nome || !email || !senha || !foto) {
     res.send(error)
     return;
   }
   const senhaCriptografada = bcrypt.hashSync(senha, saltRounds)
-  User.addUser({nome, email, senhaCriptografada}, (err, results) => {
+  User.addUser({nome, email, foto, senhaCriptografada}, (err, results) => {
     if(err) res.send(error)
     else res.send({status: "sucesso"})
   })
