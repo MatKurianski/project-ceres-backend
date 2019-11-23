@@ -35,6 +35,10 @@ class Product {
             " WHERE CatProd.fk_idCategoria = ?", [category], (err, res) => callback(err, res))
   }
 
+  static getProductsByCategoryId(categoryId, callback) {
+    db.query("select * from Produto INNER JOIN CatProd on CatProd.fk_idCategoria = ? and CatProd.fk_idProduto = Produto.idProduto;", [categoryId], (err, res => callback(err, res)))
+  }
+
   static getAllCategories(callback){
     db.query("SELECT * FROM Categoria", (err, res) => callback(err, res))
   }

@@ -1,11 +1,10 @@
 const Product = require('./../models/Product')
 
 async function addProduct(req, res) {
-  const {categorias: _categorias, usuario: _usuario, nome, preco: _preco, descricao} = req.body
+  const {categorias: _categorias, usuario: _usuario, nome, preco, descricao} = req.body
   const usuario = parseInt(_usuario)
   const imagem = req.file.filename
   const categorias = JSON.parse(_categorias)
-  const preco = parseInt(_preco)
   
   if(!(usuario && nome && preco && descricao && imagem)) {
     res.send({status: 'faltando informações'})
@@ -41,6 +40,14 @@ async function findProductByCategory(req, res, category) {
   })
 }
 
+async function findProductsByCategoryId(req, res) {
+  const { categoryId } = req.query
+  Product.findProductByCategory(categoryId, (err, results) => {
+    if(err) console.log(err)
+    else res.send(results)
+  })
+}
+
 async function getAllCategories(req, res) {
   Product.getAllCategories((err, results) => {
     if(err) res.send({status: 'error'})
@@ -53,5 +60,6 @@ module.exports = {
   getProductbyID,
   findProductByCategory,
   getAllCategories,
-  addProduct
+  addProduct,
+  findProductsByCategoryId
 }
