@@ -9,7 +9,10 @@ class Product {
 	    [usuario, nome, preco, imagem, descricao], 
 	
 	    (err, results) => {
-        console.log(err)
+        if(err) {
+          console.log(err)
+          return
+        }
         if(Array.isArray(categorias)) {
           categorias.forEach(categoria => {
             db.query("INSERT INTO CatProd (fk_idProduto, fk_idCategoria) VALUES (?,?)", [results.insertId, categoria], (err, res) => {
