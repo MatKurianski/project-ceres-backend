@@ -62,7 +62,7 @@ async function getAllCategories(req, res) {
   })
 }
 
-async function productFormat(produtos){
+function productFormat(produtos){
   const produtosFormatados = produtos.map(_produto =>{
     const vendedor = {id: _produto.idVendedor, nome: _produto.nomeVendedor}
     
