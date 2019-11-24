@@ -25,10 +25,6 @@ class Product {
     )
   }
 
-  static getAllProducts(callback) {
-    db.query("SELECT * FROM Produto", (err, res) => callback(err, res))
-  }
-
   static getProductbyID(id, callback) {
     db.query("SELECT * FROM Produto WHERE id = ? limit 1", [id], (err, res) => callback(err, res))
   }
@@ -39,13 +35,25 @@ class Product {
   }
 
   static getProductsByCategoryId(categoryId, callback) {
-    db.query("select * from Produto INNER JOIN CatProd on CatProd.fk_idCategoria = ? and CatProd.fk_idProduto = Produto.idProduto;", [categoryId], (err, res => callback(err, res)))
+    try {
+      return  db.query("select * from Produto INNER JOIN CatProd on CatProd.fk_idCategoria = ? and CatProd.fk_idProduto = Produto.idProduto;", [categoryId], (err, res => callback(err, res)))
+    }
+    catch(e){}
   }
 
   static getAllCategories(callback){
     db.query("SELECT * FROM Categoria", (err, res) => callback(err, res))
   }
 
+  static getAllProducts(callback, options){
+    let query = "SELECT Produto.idProduto, Produto.nome, Produto.preco, Produto.descricao, Usuarios.nome as nomeVendedor, Usuarios.id as idVendedor" +
+                "FROM Produto" +
+                "INNER JOIN Usuarios ON Usuarios.id = Produto.fk_idUsuario"
+
+    if(options.where) query += options.where
+  
+    db.query(query, (err, res) => callback(err, res))
+  }
   static genUserAuthToken(id) {
     return jwt.sign({id}, secretKey)
   }
