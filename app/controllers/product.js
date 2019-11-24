@@ -25,24 +25,18 @@ async function addProduct(req, res) {
 }
 
 async function getAllProducts(req, res) {
-  Product.getAllProducts(async (err, results) => {
+  Product.getAllProducts((err, results) => {
     if(err) res.send({status: 'error'})
-    else {
-      const produtosFormatados = await productFormat(results)
-      res.send(produtosFormatados)
-    }
+    else res.send( productFormat(results) )
   })
 }
 
 async function getProductbyID(req, res, id) {
   const option = { where: `WHERE Produto.id = ${id}` }
 
-  Product.getAllProducts(option, async (err, results) => {
+  Product.getAllProducts(option, (err, results) => {
     if(err) res.send({status: 'error'})
-    else {
-      const produtosFormatados = await productFormat(results)
-      res.send(produtosFormatados)
-    }
+    else res.send( productFormat(results) )
   })
 }
 
@@ -70,7 +64,7 @@ async function getAllCategories(req, res) {
 
 async function productFormat(produtos){
   const produtosFormatados = produtos.map(_produto =>{
-    const vendedor = {id: _produto.idVendedor, nome: _produto.nomeVendedor} 
+    const vendedor = {id: _produto.idVendedor, nome: _produto.nomeVendedor}
     
     const produto = {
       id: _produto.idProduto, 
@@ -82,6 +76,7 @@ async function productFormat(produtos){
 
     return produto
   })
+
   return produtosFormatados
 }
 
