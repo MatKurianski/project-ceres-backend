@@ -45,13 +45,12 @@ class Product {
     db.query("SELECT * FROM Categoria", (err, res) => callback(err, res))
   }
 
-  static getAllProducts(callback, options){
+  static getAllProducts(callback, options={}){
     let query = "SELECT Produto.idProduto, Produto.nome, Produto.preco, Produto.descricao, Usuarios.nome as nomeVendedor, Usuarios.id as idVendedor" +
-                "FROM Produto" +
-                "INNER JOIN Usuarios ON Usuarios.id = Produto.fk_idUsuario"
+                " FROM Produto" +
+                " INNER JOIN Usuarios ON Usuarios.id = Produto.fk_idUsuario"
 
     if(options.where) query += options.where
-  
     db.query(query, (err, res) => callback(err, res))
   }
   static genUserAuthToken(id) {
