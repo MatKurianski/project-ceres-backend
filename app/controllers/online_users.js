@@ -6,6 +6,7 @@ const setUserAsOnline = (req, res) => {
   res.send({status: "sucesso"})
 }
 
+
 const getOnlineUsers = (req, res) => {
   res.send(model.getOnlineUsers())
 }

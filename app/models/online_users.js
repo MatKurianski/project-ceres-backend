@@ -4,7 +4,6 @@ const MAXTIMEOUT = 1000 * 60 * 10
 
 const setUserAsOnline = id => {
   onlineUsers.set(id, Date.now())
-  console.log(onlineUsers)
 }
 
 const isBeforeTimeOut = time => {
@@ -12,16 +11,14 @@ const isBeforeTimeOut = time => {
 }
 
 const userIsOnline = id => {
-  const userTimeOut = onlineUsers.get(id)
-  if(userTimeOut) return isBeforeTimeOut(userIsOnline)
-  return false
+  const _onlineUsers = getOnlineUsers()
+  return _onlineUsers.includes(id)
 }
 
 const getOnlineUsers = () => {
   onlineUsers.forEach((value, key) => {
     if(!isBeforeTimeOut(value)) {
       onlineUsers.delete(key)
-      console.log('vish')
     }
   })
   return [...onlineUsers.keys()]
@@ -30,5 +27,6 @@ const getOnlineUsers = () => {
 module.exports = {
   setUserAsOnline,
   userIsOnline,
-  getOnlineUsers
+  getOnlineUsers,
+  onlineUsers
 }
