@@ -67,7 +67,7 @@ async function getAllCategories(req, res) {
 function productFormat(_produtos) {
   const vendedores = new Map()
   
-  const produtosFormatados = _produtos.reduce((map, _produto) =>{
+  const _produtosFormatados = _produtos.reduce((map, _produto) =>{
     let vendedor = undefined
     if(vendedores.has(_produto.idVendedor)) {
       vendedor = vendedores.get(_produto.idVendedor)
@@ -105,7 +105,19 @@ function productFormat(_produtos) {
     return map
   }, new Map())
 
-  return Array.from(produtosFormatados.values())
+  const produtosFormatados = Array.from(_produtosFormatados.values())
+  produtosFormatados.sort((a, b) => {
+    if((a && b) && (a.vendedor && b.vendedor)) {
+      const onlineA = a.vendedor.online
+      const onlineB = b.vendedor.online
+
+      if(onlineA && onlineB) return 0
+      else if(onlineA && !onlineB) return -1
+      else return 1
+    }
+    return 0
+  })
+  return produtosFormatados
 }
 
 module.exports = {
