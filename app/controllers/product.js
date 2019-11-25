@@ -1,5 +1,5 @@
 const Product = require('./../models/Product')
-const { userIsOnline } = require('./../models/online_users')
+const { userIsOnline } = require('./../models/online_users')  
 
 async function addProduct(req, res) {
   const {categorias: _categorias, usuario: _usuario, nome, preco, descricao} = req.body
@@ -42,8 +42,16 @@ async function getProductbyID(req, res, id) {
 }
 
 async function findProductsByCategoryId(req, res) {
-  const { categoryId } = req.query
+  const { categoryId } = req.params
   Product.getAllProducts({ where: ' WHERE CatProd.fk_idCategoria = ' + categoryId }, (err, results) => {
+    if(err) {} //console.log(err)
+    else res.send(productFormat(results))
+  })
+}
+
+async function findProductsByVendedorId(req, res) {
+  const { idVendedor } = req.params
+  Product.getAllProducts({ where: ' WHERE Produto.fk_idUsuario = ' + idVendedor }, (err, results) => {
     if(err) console.log(err)
     else res.send(productFormat(results))
   })
@@ -105,5 +113,6 @@ module.exports = {
   getProductbyID,
   getAllCategories,
   addProduct,
-  findProductsByCategoryId
+  findProductsByCategoryId,
+  findProductsByVendedorId
 }
