@@ -41,16 +41,9 @@ async function getProductbyID(req, res, id) {
   })
 }
 
-async function findProductByCategory(req, res, category) {
-  Product.findProductByCategory(category, (err, results) => {
-    if(err) res.send({status: 'error'})
-    else res.send(results)
-  })
-}
-
 async function findProductsByCategoryId(req, res) {
   const { categoryId } = req.query
-  Product.getAllProducts({ where: ' INNER JOIN CatProd ON Produto.idProduto = CatProd.fk_idProduto WHERE CatProd.fk_idCategoria =' + categoryId }, (err, results) => {
+  Product.getAllProducts({ where: ' WHERE CatProd.fk_idCategoria = ' + categoryId }, (err, results) => {
     if(err) console.log(err)
     else res.send(productFormat(results))
   })
@@ -63,9 +56,10 @@ async function getAllCategories(req, res) {
   })
 }
 
-function productFormat(produtos) {
+function productFormat(_produtos) {
   const vendedores = new Map()
-  const produtosFormatados = produtos.map(_produto =>{
+  
+  const produtosFormatados = _produtos.reduce((map, _produto) =>{
     let vendedor = undefined
     if(vendedores.has(_produto.idVendedor)) {
       vendedor = vendedores.get(_produto.idVendedor)
@@ -74,27 +68,41 @@ function productFormat(produtos) {
       vendedor = {id: _produto.idVendedor, nome: _produto.nomeVendedor, online}
       vendedores.set(_produto.idVendedor, vendedor)
     }
-    const produto = {
-      idProduto: _produto.idProduto, 
-      nome: _produto.nome, 
-      preco: _produto.preco, 
-      descricao: _produto.desc,
-      imagem: _produto.imagem,
-      vendedor: vendedor
+
+    const idProduto = _produto.idProduto
+    let produto = map.get(idProduto)
+
+    if(!produto) {
+      produto = {
+        idProduto: _produto.idProduto, 
+        nome: _produto.nome, 
+        preco: _produto.preco, 
+        descricao: _produto.descricao,
+        imagem: _produto.imagem,
+        vendedor: vendedor,
+        categorias: []
+      }
+      map.set(idProduto, produto)
     }
 
-    return produto
-  })
+    const { idCategoria, nomeCategoria } = _produto
+    const { categorias } = produto
 
-  return produtosFormatados
+    if(idCategoria && nomeCategoria) {
+      categorias.push({
+        idCategoria,
+        nomeCategoria
+      })
+    }
+    return map
+  }, new Map())
+
+  return Array.from(produtosFormatados.values())
 }
-
-
 
 module.exports = {
   getAllProducts,
   getProductbyID,
-  findProductByCategory,
   getAllCategories,
   addProduct,
   findProductsByCategoryId

@@ -46,11 +46,14 @@ class Product {
   }
 
   static getAllProducts(options={}, callback){
-    let query = "SELECT Produto.idProduto, Produto.nome, Produto.preco, Produto.descricao, Produto.imagem, Usuarios.nome as nomeVendedor, Usuarios.id as idVendedor" +
+    let query = "SELECT Produto.idProduto, Produto.nome, Produto.preco, Produto.descricao, Produto.imagem, Usuarios.nome as nomeVendedor, Usuarios.id as idVendedor, CatProd.fk_idCategoria as idCategoria, Categoria.nomeCategoria " +
                 " FROM Produto" +
-                " INNER JOIN Usuarios ON Usuarios.id = Produto.fk_idUsuario"
+                " INNER JOIN Usuarios ON Usuarios.id = Produto.fk_idUsuario " +
+                " LEFT JOIN CatProd ON CatProd.fk_idProduto = Produto.idProduto  " +
+                " LEFT JOIN Categoria ON Categoria.idCategoria = CatProd.fk_idCategoria "
 
     if(options.where) query += options.where
+    query += ';'
   
     db.query(query, (err, res) => callback(err, res))
   }
