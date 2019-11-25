@@ -46,7 +46,7 @@ class Product {
   }
 
   static getAllProducts(callback, options={}){
-    let query = "SELECT Produto.idProduto, Produto.nome, Produto.preco, Produto.descricao, Usuarios.nome as nomeVendedor, Usuarios.id as idVendedor" +
+    let query = "SELECT Produto.idProduto, Produto.nome, Produto.preco, Produto.descricao, Produto.imagem, Usuarios.nome as nomeVendedor, Usuarios.id as idVendedor" +
                 " FROM Produto" +
                 " INNER JOIN Usuarios ON Usuarios.id = Produto.fk_idUsuario"
 

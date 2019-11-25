@@ -1,4 +1,5 @@
 const Product = require('./../models/Product')
+const { userIsOnline, onlineUsers } = require('./../models/online_users')
 
 async function addProduct(req, res) {
   const {categorias: _categorias, usuario: _usuario, nome, preco, descricao} = req.body
@@ -62,15 +63,23 @@ async function getAllCategories(req, res) {
   })
 }
 
-function productFormat(produtos){
+function productFormat(produtos) {
+  const vendedores = new Map()
   const produtosFormatados = produtos.map(_produto =>{
-    const vendedor = {id: _produto.idVendedor, nome: _produto.nomeVendedor}
-    
+    let vendedor = undefined
+    if(vendedores.has(_produto.idVendedor)) {
+      vendedor = vendedores.get(_produto.idVendedor)
+    } else {
+      const online = userIsOnline(_produto.idVendedor)
+      vendedor = {id: _produto.idVendedor, nome: _produto.nomeVendedor, online}
+      vendedores.set(_produto.idVendedor, vendedor)
+    }
     const produto = {
-      id: _produto.idProduto, 
+      idProduto: _produto.idProduto, 
       nome: _produto.nome, 
       preco: _produto.preco, 
-      descricao: _produto.desc, 
+      descricao: _produto.desc,
+      imagem: _produto.imagem,
       vendedor: vendedor
     }
 
