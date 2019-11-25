@@ -53,7 +53,7 @@ class Product {
                 " LEFT JOIN Categoria ON Categoria.idCategoria = CatProd.fk_idCategoria "
 
     if(options.where) query += options.where
-    query += ';'
+    query += ' ORDER BY Produto.idProduto DESC;'
   
     db.query(query, (err, res) => callback(err, res))
   }
