@@ -1,5 +1,5 @@
 const Product = require('./../models/Product')
-const { userIsOnline, onlineUsers } = require('./../models/online_users')
+const { userIsOnline } = require('./../models/online_users')
 
 async function addProduct(req, res) {
   const {categorias: _categorias, usuario: _usuario, nome, preco, descricao} = req.body
@@ -26,7 +26,7 @@ async function addProduct(req, res) {
 }
 
 async function getAllProducts(req, res) {
-  Product.getAllProducts((err, results) => {
+  Product.getAllProducts({}, (err, results) => {
     if(err) res.send({status: 'error'})
     else res.send( productFormat(results) )
   })
@@ -50,9 +50,9 @@ async function findProductByCategory(req, res, category) {
 
 async function findProductsByCategoryId(req, res) {
   const { categoryId } = req.query
-  Product.findProductByCategory(categoryId, (err, results) => {
+  Product.getAllProducts({ where: ' INNER JOIN CatProd ON Produto.idProduto = CatProd.fk_idProduto WHERE CatProd.fk_idCategoria =' + categoryId }, (err, results) => {
     if(err) console.log(err)
-    else res.send(results)
+    else res.send(productFormat(results))
   })
 }
 

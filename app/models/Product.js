@@ -45,7 +45,7 @@ class Product {
     db.query("SELECT * FROM Categoria", (err, res) => callback(err, res))
   }
 
-  static getAllProducts(callback, options={}){
+  static getAllProducts(options={}, callback){
     let query = "SELECT Produto.idProduto, Produto.nome, Produto.preco, Produto.descricao, Produto.imagem, Usuarios.nome as nomeVendedor, Usuarios.id as idVendedor" +
                 " FROM Produto" +
                 " INNER JOIN Usuarios ON Usuarios.id = Produto.fk_idUsuario"
