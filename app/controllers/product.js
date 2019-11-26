@@ -83,7 +83,7 @@ function productFormat(_produtos) {
       vendedor = vendedores.get(_produto.idVendedor)
     } else {
       const online = userIsOnline(_produto.idVendedor)
-      vendedor = {id: _produto.idVendedor, nome: _produto.nomeVendedor, online}
+      vendedor = {id: _produto.idVendedor, nome: _produto.nomeVendedor, online, foto: _produto.fotoVendedor}
       vendedores.set(_produto.idVendedor, vendedor)
     }
 
