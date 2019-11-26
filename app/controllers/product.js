@@ -57,6 +57,16 @@ async function findProductsByVendedorId(req, res) {
   })
 }
 
+async function searchProduct(req, res) {
+  const { searchQuery } = req.params
+  if(!searchProduct) res.send({status: 'error'})
+  const searchQueryDecoded = decodeURI(searchQuery)
+  Product.getAllProducts({ where: ` WHERE Produto.nome LIKE "%${searchQueryDecoded}%" OR Usuarios.nome LIKE "%${searchQueryDecoded}%" ` }, (err, results) => {
+    if(err) console.log(err)
+    else res.send(productFormat(results))
+  })
+}
+
 async function getAllCategories(req, res) {
   Product.getAllCategories((err, results) => {
     if(err) res.send({status: 'error'})
@@ -126,5 +136,6 @@ module.exports = {
   getAllCategories,
   addProduct,
   findProductsByCategoryId,
-  findProductsByVendedorId
+  findProductsByVendedorId,
+  searchProduct
 }

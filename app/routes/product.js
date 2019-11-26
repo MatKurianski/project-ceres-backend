@@ -22,6 +22,9 @@ module.exports = function(app) {
 
   app.route('/products/categories/:categoryId')
     .get(Product.findProductsByCategoryId)
+
+  app.route('/products/search/:searchQuery')
+    .get(Product.searchProduct)
     
   // app.route('/product?')
   //   .get(Product.getProductbyID)
