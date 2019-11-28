@@ -1,9 +1,31 @@
 const User = require('./../models/User')
+const Product = require('./../models/Product')
+const { productFormat } = require('./../controllers/product')
 
 async function getAllUsers(req, res) {
   User.getAllUsers((err, results) => {
     if(err) res.send({status: 'error'})
     else res.send(results)
+  })
+}
+
+async function getUserInfoById(req, res) {
+  const { idVendedor } = req.params
+  User.getUserbyID(idVendedor, (err, result) => {
+    if(err || result.length === 0) {
+      res.send({status: 'Usuário não encontrado'})
+    } else {
+      Product.getAllProducts({ where: ' WHERE Produto.fk_idUsuario = ' + idVendedor }, (err, results) => {
+        if(err) {
+          res.send({status: 'error'})
+        } else {
+          const produtos = productFormat(results)
+          const vendedor = result[0]
+          vendedor.produtos = produtos
+          res.send(vendedor)
+        }
+      })
+    }
   })
 }
 
@@ -18,5 +40,6 @@ async function me(req, res) {
 
 module.exports = {
   getAllUsers,
-  me
+  me,
+  getUserInfoById
 }

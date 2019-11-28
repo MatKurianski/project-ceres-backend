@@ -137,5 +137,6 @@ module.exports = {
   addProduct,
   findProductsByCategoryId,
   findProductsByVendedorId,
-  searchProduct
+  searchProduct,
+  productFormat
 }
