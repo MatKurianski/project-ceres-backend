@@ -16,7 +16,7 @@ class User {
   }
 
   static getUserbyID(id, callback) {
-    db.query("SELECT id, nome, foto, fk_idLocal FROM Usuarios WHERE id = ? limit 1", [id], (err, res) => callback(err, res))
+    db.query("SELECT id, nome, foto, fk_idLocal, telefone FROM Usuarios WHERE id = ? limit 1", [id], (err, res) => callback(err, res))
   }
 
   static findUserByEmail(email, callback) {
