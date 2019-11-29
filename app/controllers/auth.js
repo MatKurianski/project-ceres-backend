@@ -38,16 +38,16 @@ async function login(req, res) {
 }
 
 async function registerUser(req, res) {
-  const {nome, email, senha} = req.body
+  const {nome, email, senha, telefone} = req.body
   const foto = req.file.filename
 
   const error = {status: 'error'}
-  if (!nome || !email || !senha || !foto) {
+  if (!nome || !email || !senha || !foto || !telefone) {
     res.send(error)
     return;
   }
   const senhaCriptografada = bcrypt.hashSync(senha, saltRounds)
-  User.addUser({nome, email, foto, senhaCriptografada}, (err, results) => {
+  User.addUser({nome, email, foto, senhaCriptografada, telefone}, (err, results) => {
     if(err) res.send(error)
     else res.send({status: "sucesso"})
   })
