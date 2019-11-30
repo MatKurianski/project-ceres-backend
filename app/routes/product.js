@@ -14,17 +14,20 @@ var storage = multer.diskStorage(
 const upload = multer({storage})
 
 module.exports = function(app) {
-  app.route('/products/:categoryId?')
-    .get((req, res) => {
-      if(req.query.categoryId) Product.findProductsByCategoryId(req, res)
-      else Product.getAllProducts(req, res)
-    })
+  app.route('/products/')
+    .get(Product.getAllProducts)
+
+  app.route('/products/vendedor/:idVendedor')
+    .get(Product.findProductsByVendedorId)
 
   app.route('/products/categories/:categoryId')
     .get(Product.findProductsByCategoryId)
+
+  app.route('/products/search/:searchQuery')
+    .get(Product.searchProduct)
     
-  app.route('/product?')
-    .get(Product.getProductbyID)
+  app.route('/products/:idProduto')
+    .delete(auth.protectRoute, Product.deleteProductById)
 
   app.route('/new_product')
     .post(auth.protectRoute, upload.single('imagem'), Product.addProduct)

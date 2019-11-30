@@ -25,8 +25,8 @@ class Product {
     )
   }
 
-  static getProductbyID(id, callback) {
-    db.query("SELECT * FROM Produto WHERE id = ? limit 1", [id], (err, res) => callback(err, res))
+  static getProductbyId(id, callback) {
+    db.query("SELECT * FROM Produto WHERE idProduto = ? limit 1", [id], (err, res) => callback(err, res))
   }
 
   static findProductByCategory(category, callback) {
@@ -45,12 +45,19 @@ class Product {
     db.query("SELECT * FROM Categoria", (err, res) => callback(err, res))
   }
 
-  static getAllProducts(callback, options={}){
-    let query = "SELECT Produto.idProduto, Produto.nome, Produto.preco, Produto.descricao, Produto.imagem, Usuarios.nome as nomeVendedor, Usuarios.id as idVendedor" +
+  static deleteProductById(id, callback) {
+    db.query("DELETE FROM Produto WHERE idProduto = ?", [id], (err, res) => callback(err, res))
+  }
+
+  static getAllProducts(options={}, callback){
+    let query = "SELECT Produto.idProduto, Produto.nome, Produto.preco, Produto.descricao, Produto.imagem, Usuarios.nome as nomeVendedor, Usuarios.id as idVendedor, Usuarios.foto as fotoVendedor, Usuarios.telefone, CatProd.fk_idCategoria as idCategoria, Categoria.nomeCategoria " +
                 " FROM Produto" +
-                " INNER JOIN Usuarios ON Usuarios.id = Produto.fk_idUsuario"
+                " INNER JOIN Usuarios ON Usuarios.id = Produto.fk_idUsuario " +
+                " LEFT JOIN CatProd ON CatProd.fk_idProduto = Produto.idProduto  " +
+                " LEFT JOIN Categoria ON Categoria.idCategoria = CatProd.fk_idCategoria "
 
     if(options.where) query += options.where
+    query += ' ORDER BY Produto.idProduto DESC;'
   
     db.query(query, (err, res) => callback(err, res))
   }

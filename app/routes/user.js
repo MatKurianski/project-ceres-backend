@@ -6,6 +6,8 @@ module.exports = function(app) {
     .get(auth.protectRoute, User.getAllUsers)
   app.route('/users/me')
     .get(auth.protectRoute, User.me)
+  app.route('/vendedor/:idVendedor')
+    .get(User.getUserInfoById)
 }
 
 // get - pega - pegar produtos

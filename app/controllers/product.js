@@ -1,5 +1,5 @@
 const Product = require('./../models/Product')
-const { userIsOnline, onlineUsers } = require('./../models/online_users')
+const { userIsOnline } = require('./../models/online_users')  
 
 async function addProduct(req, res) {
   const {categorias: _categorias, usuario: _usuario, nome, preco, descricao} = req.body
@@ -26,7 +26,7 @@ async function addProduct(req, res) {
 }
 
 async function getAllProducts(req, res) {
-  Product.getAllProducts((err, results) => {
+  Product.getAllProducts({}, (err, results) => {
     if(err) res.send({status: 'error'})
     else res.send( productFormat(results) )
   })
@@ -41,19 +41,54 @@ async function getProductbyID(req, res, id) {
   })
 }
 
-async function findProductByCategory(req, res, category) {
-  Product.findProductByCategory(category, (err, results) => {
-    if(err) res.send({status: 'error'})
-    else res.send(results)
+async function findProductsByCategoryId(req, res) {
+  const { categoryId } = req.params
+  Product.getAllProducts({ where: ' WHERE CatProd.fk_idCategoria = ' + categoryId }, (err, results) => {
+    if(err) {} //console.log(err)
+    else res.send(productFormat(results))
   })
 }
 
-async function findProductsByCategoryId(req, res) {
-  const { categoryId } = req.query
-  Product.findProductByCategory(categoryId, (err, results) => {
+async function findProductsByVendedorId(req, res) {
+  const { idVendedor } = req.params
+  Product.getAllProducts({ where: ' WHERE Produto.fk_idUsuario = ' + idVendedor }, (err, results) => {
     if(err) console.log(err)
-    else res.send(results)
+    else res.send(productFormat(results))
   })
+}
+
+async function searchProduct(req, res) {
+  const { searchQuery } = req.params
+  if(!searchProduct) res.send({status: 'error'})
+  const searchQueryDecoded = decodeURI(searchQuery)
+  Product.getAllProducts({ where: ` WHERE Produto.nome LIKE "%${searchQueryDecoded}%" OR Usuarios.nome LIKE "%${searchQueryDecoded}%" ` }, (err, results) => {
+    if(err) console.log(err)
+    else res.send(productFormat(results))
+  })
+}
+
+async function deleteProductById(req, res) {
+  const { idProduto } = req.params
+
+  Product.getProductbyId(idProduto, (err, results) => {
+    if(err) console.log(err)
+    else {
+      if(results.length < 1) {
+        res.send({status: 'Produto inválido'})
+      } else {
+        const produto = results[0]
+        const { fk_idUsuario } = produto
+        
+        if(fk_idUsuario === res.locals.id) {
+          Product.deleteProductById(idProduto, (req, results) => {
+            if(err) res.send({status: 'erro'})
+            else res.send({status: "sucesso"})
+          })
+        } else res.send('Usuário sem permissão')
+      }
+    }
+  })
+
 }
 
 async function getAllCategories(req, res) {
@@ -63,39 +98,70 @@ async function getAllCategories(req, res) {
   })
 }
 
-function productFormat(produtos) {
+function productFormat(_produtos) {
   const vendedores = new Map()
-  const produtosFormatados = produtos.map(_produto =>{
+  
+  const _produtosFormatados = _produtos.reduce((map, _produto) =>{
     let vendedor = undefined
     if(vendedores.has(_produto.idVendedor)) {
       vendedor = vendedores.get(_produto.idVendedor)
     } else {
       const online = userIsOnline(_produto.idVendedor)
-      vendedor = {id: _produto.idVendedor, nome: _produto.nomeVendedor, online}
+      vendedor = {id: _produto.idVendedor, nome: _produto.nomeVendedor, online, foto: _produto.fotoVendedor, telefone: _produto.telefone}
       vendedores.set(_produto.idVendedor, vendedor)
     }
-    const produto = {
-      idProduto: _produto.idProduto, 
-      nome: _produto.nome, 
-      preco: _produto.preco, 
-      descricao: _produto.desc,
-      imagem: _produto.imagem,
-      vendedor: vendedor
+
+    const idProduto = _produto.idProduto
+    let produto = map.get(idProduto)
+
+    if(!produto) {
+      produto = {
+        idProduto: _produto.idProduto, 
+        nome: _produto.nome, 
+        preco: _produto.preco, 
+        descricao: _produto.descricao,
+        imagem: _produto.imagem,
+        vendedor: vendedor,
+        categorias: []
+      }
+      map.set(idProduto, produto)
     }
 
-    return produto
-  })
+    const { idCategoria, nomeCategoria } = _produto
+    const { categorias } = produto
 
+    if(idCategoria && nomeCategoria) {
+      categorias.push({
+        idCategoria,
+        nomeCategoria
+      })
+    }
+    return map
+  }, new Map())
+
+  const produtosFormatados = Array.from(_produtosFormatados.values())
+  produtosFormatados.sort((a, b) => {
+    if((a && b) && (a.vendedor && b.vendedor)) {
+      const onlineA = a.vendedor.online
+      const onlineB = b.vendedor.online
+
+      if(onlineA && onlineB) return 0
+      else if(onlineA && !onlineB) return -1
+      else return 1
+    }
+    return 0
+  })
   return produtosFormatados
 }
-
-
 
 module.exports = {
   getAllProducts,
   getProductbyID,
-  findProductByCategory,
   getAllCategories,
   addProduct,
-  findProductsByCategoryId
+  findProductsByCategoryId,
+  findProductsByVendedorId,
+  searchProduct,
+  deleteProductById,
+  productFormat
 }
