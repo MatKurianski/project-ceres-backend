@@ -4,8 +4,8 @@ const { secretKey } = require('./../config')
 
 class User {
   static addUser(user, callback) {
-    const {nome, email, foto, senhaCriptografada} = user
-    db.query("INSERT INTO Usuarios(nome, email, senha, foto) values (?, ?, ?, ?)", [nome, email, senhaCriptografada, foto], (err, results) => {
+    const {nome, email, foto, senhaCriptografada, contato} = user
+    db.query("INSERT INTO Usuarios(nome, email, senha, foto, contato) values (?, ?, ?, ?, ?)", [nome, email, senhaCriptografada, foto, contato], (err, results) => {
       console.log(results.insertId)
       callback(err, results)
     })
