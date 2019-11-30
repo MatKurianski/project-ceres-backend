@@ -2,10 +2,10 @@ const Rating = require('./../controllers/rating')
 const auth = require('./../controllers/auth')
 
 module.exports = function(app) {
-  app.route('/products/rate/:productId/:userId')
+  app.route('/products/rate/:productId/')
     .post(auth.protectRoute, Rating.addRate)
   app.route('/products/undo_rate/:rateId')
-    .put(auth.protectRoute, Rating.removeRate)
+    .delete(auth.protectRoute, Rating.removeRate)
   app.route('/product/rate/:productId')
     .get(Rating.getRatesByProduct)
   app.route('/rate/:rateId')
