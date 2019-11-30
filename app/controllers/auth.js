@@ -69,8 +69,8 @@ function protectRoute(req, res, next) {
         if(err || results.length == 0) {
           res.send('Invalid user')
         } else {
-          const { idVendedor, email } = results[0]
-          res.locals.id = idVendedor
+          const { id, email } = results[0]
+          res.locals.id = id
           res.locals.email = email
           next()
         }
