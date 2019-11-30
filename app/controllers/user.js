@@ -1,6 +1,7 @@
 const User = require('./../models/User')
 const Product = require('./../models/Product')
 const { productFormat } = require('./../controllers/product')
+const { userIsOnline } = require('./../models/online_users')
 
 async function getAllUsers(req, res) {
   User.getAllUsers((err, results) => {
@@ -21,6 +22,7 @@ async function getUserInfoById(req, res) {
         } else {
           const produtos = productFormat(results)
           const vendedor = result[0]
+          vendedor.online = userIsOnline(vendedor.id)
           vendedor.produtos = produtos
           res.send(vendedor)
         }
