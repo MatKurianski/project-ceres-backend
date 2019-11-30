@@ -30,13 +30,16 @@ async function getAllRates(req, res) {
   })
 }
 
-async function getRatebyID(req, res) {
-  const { rateId } = req.params
-  const option = { where: `WHERE Avaliacao.idAvaliacao = ${rateId}` }
+async function getUserRate(req, res) {
+  const { productId } = req.params
+  const idUsuario = res.locals.id
 
+  const option = {
+    where: `WHERE Avaliacao.pk_idProduto = ${productId} AND Avaliacao.pk_idUsuario = ${idUsuario}`
+  }
   Rating.getAllRates(option, (err, results) => {
     if(err) res.send({status: 'error'})
-    else res.send( results )
+    else res.send(results)
   })
 }
 
@@ -56,7 +59,6 @@ module.exports = {
   addRate,
   removeRate,
   getAllRates,
-  getRatebyID,
-  getRatesByProduct
-
+  getRatesByProduct,
+  getUserRate
 }
