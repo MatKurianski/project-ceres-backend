@@ -75,7 +75,7 @@ async function deleteProductById(req, res) {
     else {
       if(results.length < 1) {
         res.send({status: 'Produto inválido'})
-      } {
+      } else {
         const produto = results[0]
         const { fk_idUsuario } = produto
         
