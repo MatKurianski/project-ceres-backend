@@ -26,8 +26,8 @@ module.exports = function(app) {
   app.route('/products/search/:searchQuery')
     .get(Product.searchProduct)
     
-  // app.route('/product?')
-  //   .get(Product.getProductbyID)
+  app.route('/products/:idProduto')
+    .delete(auth.protectRoute, Product.deleteProductById)
 
   app.route('/new_product')
     .post(auth.protectRoute, upload.single('imagem'), Product.addProduct)

@@ -67,6 +67,30 @@ async function searchProduct(req, res) {
   })
 }
 
+async function deleteProductById(req, res) {
+  const { idProduto } = req.params
+
+  Product.getProductbyId(idProduto, (err, results) => {
+    if(err) console.log(err)
+    else {
+      if(results.length < 1) {
+        res.send({status: 'Produto inválido'})
+      } {
+        const produto = results[0]
+        const { fk_idUsuario } = produto
+        
+        if(fk_idUsuario === res.locals.id) {
+          Product.deleteProductById(idProduto, (req, results) => {
+            if(err) res.send({status: 'erro'})
+            else res.send({status: "sucesso"})
+          })
+        } else res.send('Usuário sem permissão')
+      }
+    }
+  })
+
+}
+
 async function getAllCategories(req, res) {
   Product.getAllCategories((err, results) => {
     if(err) res.send({status: 'error'})
@@ -138,5 +162,6 @@ module.exports = {
   findProductsByCategoryId,
   findProductsByVendedorId,
   searchProduct,
+  deleteProductById,
   productFormat
 }

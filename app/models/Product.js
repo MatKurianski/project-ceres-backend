@@ -25,8 +25,8 @@ class Product {
     )
   }
 
-  static getProductbyID(id, callback) {
-    db.query("SELECT * FROM Produto WHERE id = ? limit 1", [id], (err, res) => callback(err, res))
+  static getProductbyId(id, callback) {
+    db.query("SELECT * FROM Produto WHERE idProduto = ? limit 1", [id], (err, res) => callback(err, res))
   }
 
   static findProductByCategory(category, callback) {
@@ -43,6 +43,10 @@ class Product {
 
   static getAllCategories(callback){
     db.query("SELECT * FROM Categoria", (err, res) => callback(err, res))
+  }
+
+  static deleteProductById(id, callback) {
+    db.query("DELETE FROM Produto WHERE idProduto = ?", [id], (err, res) => callback(err, res))
   }
 
   static getAllProducts(options={}, callback){
