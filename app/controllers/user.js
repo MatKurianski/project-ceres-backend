@@ -15,17 +15,18 @@ async function getUserInfoById(req, res) {
     if(err || result.length === 0) {
       res.send({status: 'Usuário não encontrado'})
     } else {
-      const { idVendedor, nomeVendedor, email, foto, notaVendedor } = result[0]
+      const { id, nomeVendedor, email, foto, notaVendedor } = result[0]
       const vendedor = {
-        idVendedor,
+        id,
         nome: nomeVendedor,
         email,
         foto,
         notaVendedor
       }
       const produtos = productFormat(result)
-      vendedor.produtos = produtos
-      vendedor.online = userIsOnline(idVendedor)
+      if(produtos[0].idProduto !== null) vendedor.produtos = produtos
+      else vendedor.produtos = []
+      vendedor.online = userIsOnline(vendedor.id)
       res.send(vendedor)
     }
   })
