@@ -50,7 +50,7 @@ class Product {
   }
 
   static getAllProducts(options={}, callback){
-    let query = "SELECT Produto.idProduto, Produto.nome, Produto.preco, Produto.descricao, Produto.imagem, Usuarios.nome as nomeVendedor, Usuarios.id as idVendedor, Usuarios.foto as fotoVendedor, Usuarios.telefone, CatProd.fk_idCategoria as idCategoria, Categoria.nomeCategoria " +
+    let query = "SELECT Produto.idProduto, Produto.nome, Produto.preco, Produto.descricao, Produto.imagem, Usuarios.nome as nomeVendedor, Usuarios.id as idVendedor, Usuarios.foto as fotoVendedor, Usuarios.telefone, CatProd.fk_idCategoria as idCategoria, Categoria.nomeCategoria, (select AVG(nota) from Avaliacao where Produto.idProduto = pk_idProduto) as avaliacaoMedia" +
                 " FROM Produto" +
                 " INNER JOIN Usuarios ON Usuarios.id = Produto.fk_idUsuario " +
                 " LEFT JOIN CatProd ON CatProd.fk_idProduto = Produto.idProduto  " +

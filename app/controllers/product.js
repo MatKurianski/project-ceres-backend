@@ -122,7 +122,8 @@ function productFormat(_produtos) {
         descricao: _produto.descricao,
         imagem: _produto.imagem,
         vendedor: vendedor,
-        categorias: []
+        categorias: [],
+        avaliacaoMedia: _produto.avaliacaoMedia, 
       }
       map.set(idProduto, produto)
     }
