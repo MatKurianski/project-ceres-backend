@@ -1,5 +1,4 @@
 const User = require('./../models/User')
-const Product = require('./../models/Product')
 const { productFormat } = require('./../controllers/product')
 const { userIsOnline } = require('./../models/online_users')
 
@@ -16,17 +15,18 @@ async function getUserInfoById(req, res) {
     if(err || result.length === 0) {
       res.send({status: 'Usuário não encontrado'})
     } else {
-      Product.getAllProducts({ where: ' WHERE Produto.fk_idUsuario = ' + idVendedor }, (err, results) => {
-        if(err) {
-          res.send({status: 'error'})
-        } else {
-          const produtos = productFormat(results)
-          const vendedor = result[0]
-          vendedor.online = userIsOnline(vendedor.id)
-          vendedor.produtos = produtos
-          res.send(vendedor)
-        }
-      })
+      const { idVendedor, nomeVendedor, email, foto, notaVendedor } = result[0]
+      const vendedor = {
+        idVendedor,
+        nome: nomeVendedor,
+        email,
+        foto,
+        notaVendedor
+      }
+      const produtos = productFormat(result)
+      vendedor.produtos = produtos
+      vendedor.online = userIsOnline(idVendedor)
+      res.send(vendedor)
     }
   })
 }
