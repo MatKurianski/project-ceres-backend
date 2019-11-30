@@ -16,7 +16,20 @@ class User {
   }
 
   static getUserbyID(id, callback) {
-    db.query("SELECT id, nome, foto, fk_idLocal, telefone FROM Usuarios WHERE id = ? limit 1", [id], (err, res) => callback(err, res))
+    db.query(`SELECT Usuarios.id as idVendedor, Usuarios.nome as nomeVendedor, Usuarios.email, Usuarios.foto, 
+        (
+          SELECT AVG(nota) from Avaliacao
+            INNER JOIN Produto ON Produto.idProduto = Avaliacao.pk_idProduto
+                    INNER JOIN Usuarios ON Produto.fk_idUsuario = Usuarios.id
+                    WHERE Usuarios.id = ${id}
+        ) as notaVendedor,
+        Produto.idProduto, Produto.nome, Produto.preco, Produto.descricao, Produto.imagem,
+            Categoria.idCategoria, Categoria.nomecategoria as nomeCategoria
+            FROM Usuarios
+        LEFT JOIN Produto ON Produto.fk_idUsuario = Usuarios.id
+            LEFT JOIN CatProd ON fk_idProduto = Produto.idProduto
+            LEFT JOIN Categoria ON CatProd.fk_idCategoria = Categoria.idCategoria
+    WHERE id = ${id};`, (err, res) => callback(err, res))
   }
 
   static findUserByEmail(email, callback) {
