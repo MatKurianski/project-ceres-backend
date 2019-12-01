@@ -27,10 +27,17 @@ async function addProduct(req, res) {
 
 async function getMostPopularProducts(req, res) {
   Product.getAllProducts({
-    order: 'ORDER BY avaliacaoMedia, idProduto DESC'
+    order: 'ORDER BY avaliacaoMedia DESC'
   }, (err, results) => {
     if(err) res.send({status: 'error'})
-    else res.send(productFormat(results))
+    else res.send(productFormat(results, { ignoreOnline: true }))
+  })
+}
+
+async function productsByOnlineSellers(req, res) {
+  Product.getAllProducts({}, (err, results) => {
+    if(err) res.send({status: 'error'})
+    else res.send(productFormat(results, { onlyOnline: true }))    
   })
 }
 
@@ -107,7 +114,7 @@ async function getAllCategories(req, res) {
   })
 }
 
-function productFormat(_produtos) {
+function productFormat(_produtos, options={}) {
   const vendedores = new Map()
   
   const _produtosFormatados = _produtos.reduce((map, _produto) =>{
@@ -149,18 +156,22 @@ function productFormat(_produtos) {
     return map
   }, new Map())
 
-  const produtosFormatados = Array.from(_produtosFormatados.values())
-  produtosFormatados.sort((a, b) => {
-    if((a && b) && (a.vendedor && b.vendedor)) {
-      const onlineA = a.vendedor.online
-      const onlineB = b.vendedor.online
+  let produtosFormatados = Array.from(_produtosFormatados.values())
+  if (options.onlyOnline) {
+    produtosFormatados = produtosFormatados.filter(produto => produto.vendedor.online)
+  } else if(!options.ignoreOnline) {
+    produtosFormatados.sort((a, b) => {
+      if((a && b) && (a.vendedor && b.vendedor)) {
+        const onlineA = a.vendedor.online
+        const onlineB = b.vendedor.online
 
-      if(onlineA && onlineB) return 0
-      else if(onlineA && !onlineB) return -1
-      else return 1
-    }
-    return 0
-  })
+        if(onlineA && onlineB) return 0
+        else if(onlineA && !onlineB) return -1
+        else return 1
+      }
+      return 0
+    })
+  }
   return produtosFormatados
 }
 
@@ -174,5 +185,6 @@ module.exports = {
   searchProduct,
   deleteProductById,
   productFormat,
-  getMostPopularProducts
+  getMostPopularProducts,
+  productsByOnlineSellers
 }

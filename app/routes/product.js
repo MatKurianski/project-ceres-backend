@@ -20,6 +20,9 @@ module.exports = function(app) {
   app.route('/popular')
     .get(Product.getMostPopularProducts)
 
+  app.route('/fromonlineusers')
+    .get(Product.productsByOnlineSellers)
+
   app.route('/products/vendedor/:idVendedor')
     .get(Product.findProductsByVendedorId)
 
