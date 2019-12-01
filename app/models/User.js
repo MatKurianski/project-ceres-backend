@@ -24,6 +24,7 @@ class User {
                     WHERE Usuarios.id = ${id}
         ) as notaVendedor,
         Produto.idProduto, Produto.nome, Produto.preco, Produto.descricao, Produto.imagem,
+        (select AVG(nota) from Avaliacao where Produto.idProduto = Avaliacao.pk_idProduto) as avaliacaoMedia,
             Categoria.idCategoria, Categoria.nomecategoria as nomeCategoria
             FROM Usuarios
         LEFT JOIN Produto ON Produto.fk_idUsuario = Usuarios.id
