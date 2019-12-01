@@ -16,7 +16,7 @@ class User {
   }
 
   static getUserbyID(id, callback) {
-    db.query(`SELECT Usuarios.id as id, Usuarios.nome as nomeVendedor, Usuarios.email, Usuarios.foto, 
+    db.query(`SELECT Usuarios.id as id, Usuarios.nome as nomeVendedor, Usuarios.email, Usuarios.foto, Usuarios.telefone, 
         (
           SELECT AVG(nota) from Avaliacao
             INNER JOIN Produto ON Produto.idProduto = Avaliacao.pk_idProduto
