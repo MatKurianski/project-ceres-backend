@@ -5,11 +5,10 @@ module.exports = function(app) {
   app.route('/products/rate/:productId/')
     .get(auth.protectRoute, Rating.getUserRate)
     .post(auth.protectRoute, Rating.addRate)
-  app.route('/products/undo_rate/:rateId')
+  app.route('/products/undo_rate/:idProduto')
     .delete(auth.protectRoute, Rating.removeRate)
   app.route('/product/rate/:productId')
     .get(Rating.getRatesByProduct)
-  app.route('/rate/:productId')
 }
 
 // get - pega - pegar produtos

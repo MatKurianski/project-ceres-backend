@@ -1,25 +1,30 @@
 const Rating = require('./../models/Rating')
 
 async function addRate(req, res) {
-  const { idProduto, nota, comentario } = req.body
+  const { nota, comentario } = req.body
   const idUsuario = res.locals.id
+  const { productId } = req.params
   
   if(!nota) {
     res.send({status: 'De uma nota para esse produto!'})
   } else {
-    const avaliacao = {idProduto, idUsuario, nota, comentario}
+    const avaliacao = {productId, idUsuario, nota, comentario}
     Rating.addRate(avaliacao, (err, results) => {
-      if(err) res.send({status: 'error'})
+      if(err) {
+        res.send({status: 'error'})
+        console.log(err)
+      }
       else res.send({status: 'sucesso'})
     })
   }
 }
 
 async function removeRate(req, res) {
-    const { idAvaliacao } = req.body
-    Rating.removeRate(idAvaliacao, (err, results)=>{
+    const { idProduto } = req.params
+    const idUsuario = res.locals.id
+    Rating.removeRate(idProduto, idUsuario, (err, results)=>{
         if(err) res.send({status: 'error'})
-        else res.send( productFormat(results))    
+        else res.send({status: 'sucesso'})    
     })
 }
 

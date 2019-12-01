@@ -4,14 +4,13 @@ const jwt = require('jsonwebtoken')
 
 class Rating {
   static addRate(rate, callback) { 
-      const { idProduto, idUsuario, nota, comentario } = rate
-
+      const { productId, idUsuario, nota, comentario } = rate
       db.query("INSERT INTO Avaliacao (pk_idProduto, pk_idUsuario, nota, comentario) VALUES (?, ?, ?, ?)", 
-      [idProduto, idUsuario, nota, comentario], (err,res) => callback(err,res))
+      [productId, idUsuario, nota, comentario], (err,res) => callback(err,res))
   }
 
-  static removeRate(idRate, callback){
-    db.query("DELETE FROM Avaliacao WHERE Avaliacao.idAvaliacao = ?", [idRate], (err,res) => callback(err,res))
+  static removeRate(idRate, idUsuario, callback){
+    db.query("DELETE FROM Avaliacao WHERE Avaliacao.pk_idProduto = ? AND Avaliacao.pk_idUsuario = ?", [idRate, idUsuario], (err,res) => callback(err,res))
   }
 
   static getAllRates(options = {}, callback){
