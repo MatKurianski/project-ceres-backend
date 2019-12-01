@@ -25,6 +25,15 @@ async function addProduct(req, res) {
   }
 }
 
+async function getMostPopularProducts(req, res) {
+  Product.getAllProducts({
+    order: 'ORDER BY avaliacaoMedia, idProduto DESC'
+  }, (err, results) => {
+    if(err) res.send({status: 'error'})
+    else res.send(productFormat(results))
+  })
+}
+
 async function getAllProducts(req, res) {
   Product.getAllProducts({}, (err, results) => {
     if(err) res.send({status: 'error'})
@@ -164,5 +173,6 @@ module.exports = {
   findProductsByVendedorId,
   searchProduct,
   deleteProductById,
-  productFormat
+  productFormat,
+  getMostPopularProducts
 }

@@ -17,6 +17,9 @@ module.exports = function(app) {
   app.route('/products/')
     .get(Product.getAllProducts)
 
+  app.route('/popular')
+    .get(Product.getMostPopularProducts)
+
   app.route('/products/vendedor/:idVendedor')
     .get(Product.findProductsByVendedorId)
 
