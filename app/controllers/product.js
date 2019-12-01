@@ -119,7 +119,8 @@ function productFormat(_produtos, options={}) {
   
   const _produtosFormatados = _produtos.reduce((map, _produto) =>{
     let vendedor = undefined
-    if(vendedores.has(_produto.idVendedor)) {
+    if(options.vendedor) vendedor = {...options.vendedor}
+    else if(vendedores.has(_produto.idVendedor)) {
       vendedor = vendedores.get(_produto.idVendedor)
     } else {
       const online = userIsOnline(_produto.idVendedor)

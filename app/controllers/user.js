@@ -24,10 +24,10 @@ async function getUserInfoById(req, res) {
         telefone,
         notaVendedor
       }
-      const produtos = productFormat(result)
+      vendedor.online = userIsOnline(vendedor.id)
+      const produtos = productFormat(result, { vendedor })
       if(produtos[0].idProduto !== null) vendedor.produtos = produtos
       else vendedor.produtos = []
-      vendedor.online = userIsOnline(vendedor.id)
       res.send(vendedor)
     }
   })
