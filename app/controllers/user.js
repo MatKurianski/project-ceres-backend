@@ -15,12 +15,13 @@ async function getUserInfoById(req, res) {
     if(err || result.length === 0) {
       res.send({status: 'Usuário não encontrado'})
     } else {
-      const { id, nomeVendedor, email, foto, notaVendedor } = result[0]
+      const { id, nomeVendedor, email, foto, notaVendedor, telefone } = result[0]
       const vendedor = {
         id,
         nome: nomeVendedor,
         email,
         foto,
+        telefone,
         notaVendedor
       }
       const produtos = productFormat(result)
