@@ -4,19 +4,19 @@ const { userIsOnline } = require('./../models/online_users')
 async function addProduct(req, res) {
   const {categorias: _categorias, usuario: _usuario, nome, preco, descricao} = req.body
   const usuario = parseInt(_usuario)
-  const imagem = req.file.filename
   const categorias = JSON.parse(_categorias)
   
-  if(!(usuario && nome && preco && descricao && imagem)) {
+  if(!(usuario && nome && preco && descricao && req.file)) {
   
     if(!nome) res.send({status: 'Qual é nome desse produto?'})
-    if(!preco) res.send({status: 'Precisamos saber quanto custa.'})
-    if(!descricao) res.send({status: 'Precisamos de uma descrição para o seu produto'})
-    if(!imagem) res.send({status: 'De um gostinho com uma imagem!'})
+    else if(!preco) res.send({status: 'Precisamos saber quanto custa.'})
+    else if(!descricao) res.send({status: 'Precisamos de uma descrição para o seu produto'})
+    else if(!req.file) res.send({status: 'De um gostinho com uma imagem!'})
 
   } else if(res.locals.id !== usuario) {
     res.send({status: 'usuario invalido'})
   } else {
+    const imagem = req.file.filename
     const produto = {nome, preco, descricao, usuario, categorias, imagem}
     Product.addProduct(produto, (err, results) => {
       if(err) res.send({status: 'error'})
