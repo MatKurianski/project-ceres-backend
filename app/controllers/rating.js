@@ -46,7 +46,7 @@ async function getUserRate(req, res) {
 async function getRatesByProduct(req, res){
   const { productId } = req.params
   const options = {
-    join: `INNER JOIN Produto ON Produto.idProduto = ${productId}`
+    where: `WHERE pk_idProduto = ${productId}`
   }
   
   Rating.getAllRates(options, (err, results) => {

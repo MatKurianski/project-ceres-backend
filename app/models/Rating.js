@@ -15,7 +15,7 @@ class Rating {
   }
 
   static getAllRates(options = {}, callback){
-    let query = "SELECT pk_idProduto, nota, comentario FROM Avaliacao "
+    let query = "SELECT pk_idUsuario, pk_idProduto, nota, comentario FROM Avaliacao "
 
     if(options.join) query += options.join
     if(options.where) query += options.where
