@@ -29,7 +29,7 @@ class User {
         LEFT JOIN Produto ON Produto.fk_idUsuario = Usuarios.id
             LEFT JOIN CatProd ON fk_idProduto = Produto.idProduto
             LEFT JOIN Categoria ON CatProd.fk_idCategoria = Categoria.idCategoria
-    WHERE id = ${id};`, (err, res) => callback(err, res))
+    WHERE id = ${id} ORDER BY Produto.idProduto DESC;`, (err, res) => callback(err, res))
   }
 
   static findUserByEmail(email, callback) {
